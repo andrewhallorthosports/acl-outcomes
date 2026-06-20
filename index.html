@@ -177,6 +177,16 @@ footer{background:var(--ink);padding:36px 24px;text-align:center;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 @keyframes scaleIn{from{opacity:0;transform:scale(0.94);}to{opacity:1;transform:scale(1);}}
+
+/* Authors strip */
+.authors-strip{background:var(--pale);border-bottom:1px solid var(--border);padding:14px 20px;}
+.authors-inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 0;}
+.authors-label{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--light);margin-right:12px;flex-shrink:0;white-space:nowrap;}
+.authors-names{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:400;color:var(--ink2);line-height:1.7;flex:1;}
+.authors-names .ci{font-weight:600;color:var(--ink);}
+.authors-names .ci-role{font-size:8px;color:var(--light);margin-left:2px;}
+.authors-sub{width:100%;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--light);margin-top:5px;padding-top:5px;border-top:1px dashed var(--border);}
+
 </style>
 </head>
 <body>
@@ -244,6 +254,20 @@ footer{background:var(--ink);padding:36px 24px;text-align:center;}
 </div>
 
 <!-- RESULTS: FURTHER SURGERY -->
+
+<!-- AUTHORS -->
+<div class="authors-strip">
+  <div class="authors-inner">
+    <span class="authors-label">Authors</span>
+    <span class="authors-names">
+      R Cullinan · L Baxendale-Smith · T Williamson · E Sutherland · L Watson ·
+      N D Clement · I R Murray · T O White · P Walmsley ·
+      <span class="ci">A J Hall</span><span class="ci-role"> (CI)</span>
+    </span>
+    <span class="authors-sub">EKAD Project Group: I Daniels · F Dyer · K Milne · J M Leow · S Silvestre · G Snowden · R Webb &nbsp;·&nbsp; Royal Infirmary of Edinburgh · School of Medicine, University of St Andrews</span>
+  </div>
+</div>
+
 <section id="results">
   <div class="inner">
     <span class="eyebrow reveal">Results · Further Surgery</span>
