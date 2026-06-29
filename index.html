@@ -254,6 +254,118 @@ footer{background:var(--ink);padding:36px 24px;text-align:center;}
 </div>
 
 <!-- RESULTS: FURTHER SURGERY -->
+<section id="further-surgery" style="background:var(--pale);padding:72px 24px;">
+  <div class="inner">
+    <span class="eyebrow reveal">Results · Further Surgery</span>
+    <h2 class="s-title reveal">Approximately one in six needed further surgery</h2>
+    <p class="s-lead reveal">90 of 512 patients (17.6%) underwent further ipsilateral knee surgery. Mean time to further surgery: 15.5 months (range 2–55).</p>
+
+    <!-- Split bar -->
+    <div class="reveal" style="margin:40px 0 48px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);">512 primary ACLr patients</span>
+      </div>
+      <div style="display:flex;border-radius:4px;overflow:hidden;height:52px;">
+        <div style="width:82.4%;background:#1F3A5F;display:flex;align-items:center;padding:0 16px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;">422 — no further surgery (82.4%)</span>
+        </div>
+        <div style="width:17.6%;background:#245469;display:flex;align-items:center;justify-content:center;padding:0 8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;white-space:nowrap;">90 (17.6%)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive chart -->
+    <div class="reveal">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);margin-bottom:20px;">Breakdown of the 90 further procedures</div>
+      <div id="surgery-chart" style="max-width:640px;">
+        <!-- Bars rendered by JS below -->
+      </div>
+      <p style="font-size:13px;color:var(--light);margin-top:16px;font-style:italic;">Hover or tap a bar to see details.</p>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="surg-tooltip" style="display:none;position:fixed;background:#1F3A5F;color:#fff;padding:10px 14px;border-radius:4px;font-size:13px;pointer-events:none;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);"></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var data = [
+    { label:'Revision ACLr',        n:32, detail:'Re-rupture requiring revision reconstruction. 6.3% of all 512 patients.' },
+    { label:'Arthrolysis',           n:25, detail:'Surgical release for stiffness / arthrofibrosis.' },
+    { label:'Meniscectomy',          n:18, detail:'Further meniscal surgery following index ACLr.' },
+    { label:'Surgical washout',      n:6,  detail:'Irrigation and debridement.' },
+    { label:'Other',                 n:5,  detail:'Miscellaneous further procedures.' },
+    { label:'Osteochondral procedure', n:4, detail:'Cartilage-related intervention.' }
+  ];
+  var max = data[0].n;
+  var colours = ['#1F3A5F','#245469','#2D7F7A','#3A8F8A','#4A9F9A','#5AAFAA'];
+  var chart = document.getElementById('surgery-chart');
+  var tip   = document.getElementById('surg-tooltip');
+
+  data.forEach(function(d, i){
+    var pct = (d.n / max * 100).toFixed(1);
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;';
+
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'width:190px;font-size:13px;color:var(--ink2);text-align:right;flex-shrink:0;';
+    lbl.textContent = d.label;
+
+    var track = document.createElement('div');
+    track.style.cssText = 'flex:1;background:#e8eef4;border-radius:2px;height:32px;position:relative;overflow:hidden;';
+
+    var bar = document.createElement('div');
+    bar.style.cssText = 'width:0;height:100%;background:'+colours[i]+';border-radius:2px;transition:width 0.8s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding-left:10px;';
+    bar.innerHTML = '<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;white-space:nowrap;">'+d.n+'</span>';
+    track.appendChild(bar);
+
+    row.appendChild(lbl);
+    row.appendChild(track);
+    chart.appendChild(row);
+
+    // Animate in
+    setTimeout(function(){ bar.style.width = pct + '%'; }, 200 + i * 100);
+
+    // Tooltip
+    function showTip(e){
+      tip.innerHTML = '<strong>'+d.label+'</strong><br>n = '+d.n+' ('+((d.n/90)*100).toFixed(1)+'% of further procedures)<br><span style="font-size:11px;color:#aac;">'+d.detail+'</span>';
+      tip.style.display = 'block';
+      moveTip(e);
+    }
+    function moveTip(e){
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top  = (e.clientY - 10) + 'px';
+    }
+    function hideTip(){ tip.style.display = 'none'; }
+
+    row.addEventListener('mouseenter', showTip);
+    row.addEventListener('mousemove',  moveTip);
+    row.addEventListener('mouseleave', hideTip);
+    row.addEventListener('click', function(e){
+      tip.style.display === 'none' ? showTip(e) : hideTip();
+    });
+  });
+
+  // Intersection Observer to trigger animation on scroll into view
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          chart.querySelectorAll('div[style*="width:0"]').forEach(function(b,i){
+            var pct = (data[i].n / max * 100).toFixed(1);
+            setTimeout(function(){ b.style.width = pct + '%'; }, i * 100);
+          });
+          obs.unobserve(chart);
+        }
+      });
+    }, {threshold:0.3});
+    obs.observe(chart);
+  }
+})();
+</script>
+
 
 <!-- AUTHORS -->
 <div class="authors-strip">
